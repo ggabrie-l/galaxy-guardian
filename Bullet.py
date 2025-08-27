@@ -12,7 +12,6 @@ class Bullet():
         self.Rect = pygame.Rect((self.x, self.y), (15, 15))
         self.y -= 3
         if self.y < 0:
-            print("oopsss")
             self.destroy()
         pygame.draw.rect(display, (255,255,128), rect=self.Rect)
 

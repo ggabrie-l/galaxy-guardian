@@ -8,7 +8,7 @@ class StructureClass:
         self.Rect = None
         self.damageable = True
         self.y = 0
-        self.x = 0
+        self.x = 30
 
     def destroy(self):
         # play animation 

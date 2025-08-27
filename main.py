@@ -14,7 +14,7 @@ Player = player.Player()
 StructureObj = Structure.StructureClass()
 
 alive_objects = []
-alive_objects.append(Player)
+
 alive_objects.append(StructureObj)
 
 alive_bullets = []
@@ -26,6 +26,7 @@ if __name__ == "__main__":
 
     while running:    
         DISPLAYSURF.fill((0,0,0))
+        Player.draw(DISPLAYSURF)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -56,28 +57,39 @@ if __name__ == "__main__":
             if event.type == pygame.USEREVENT + 0 and Player.attack == True:
                 new_shoot = Bullet.Bullet(True, Player.x + 37, Player.y + 10)
                 alive_bullets.append(new_shoot)
-        print(alive_objects)
-        if len(alive_objects) == 1:
-            new_structure = Structure.StructureClass()
-            alive_objects.append(new_structure)
-        for object in alive_objects: 
-            if object.state == "Destroyed":
-                del(object)
-                continue
-            object.draw(DISPLAYSURF)
-            if len(alive_bullets) > 1:    
-                for bullet in alive_bullets:
-                    if object == Player:
-                        continue
+
+
+        if not alive_objects:
+            for index, bullet in enumerate(alive_bullets):
                     if bullet.state == "Destroyed":
+                        alive_bullets.pop(index)
                         del(bullet)
                         continue
                     else:
                         bullet.draw(DISPLAYSURF)
 
-                    if bullet.Rect != None and bullet.Rect.bottom < object.Rect.bottom and bullet.Rect.left > object.Rect.left and bullet.Rect.right < object.Rect.right:
-                            object.takeDmg(1)
-                            bullet.state = "Destroyed"
+            if Player.state == "Active":
+                new_structure = Structure.StructureClass()
+                alive_objects.append(new_structure)
+        else:                
+            for index, object in enumerate(alive_objects): 
+                object.draw(DISPLAYSURF)
+                if len(alive_bullets) > 1:    
+                    for  bullet in alive_bullets:
+                        if bullet.state == "Destroyed":
+                            alive_bullets.pop(index)
+                            del(bullet)
+                            continue
+                        else:
+                            bullet.draw(DISPLAYSURF)
+
+                        if bullet.Rect != None and bullet.Rect.bottom < object.Rect.bottom and bullet.Rect.left > object.Rect.left and bullet.Rect.right < object.Rect.right:
+                                object.takeDmg(1)
+                                bullet.state = "Destroyed"
+                if object.state == "Destroyed":
+                    print("Len ", len(alive_objects), "INDEX", index)
+                    alive_objects.remove(object)
+                    del(object)    
 
         pygame.display.update() 
         clock.tick(60)
